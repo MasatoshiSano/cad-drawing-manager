@@ -62,6 +62,11 @@ export default function PDFViewer({
         const context = canvas.getContext('2d');
         if (!context) return;
 
+        // PDFの回転情報を取得
+        // PDF.jsでは、page.rotateプロパティで回転情報を取得できる
+        // ただし、PDFのメタデータの回転情報は表示時に自動適用されるため、
+        // ここではユーザーが設定した回転のみを適用する
+        // 注意: PDFのメタデータの回転は既にPDF.jsによって自動適用されている
         const viewport = page.getViewport({ scale, rotation });
 
         canvas.height = viewport.height;

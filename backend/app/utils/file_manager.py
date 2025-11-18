@@ -275,8 +275,21 @@ class FileManager:
         doc = fitz.open(pdf_path)
         page = doc[page_num]  # 指定されたページ
 
-        # 50%のサイズで画像化
-        mat = fitz.Matrix(0.5, 0.5)
+        # ページの回転情報を取得
+        # 注意: page.set_rotation()は表示時の回転のみを変更するため、
+        # 実際のコンテンツは回転していない可能性がある
+        # そのため、回転情報を考慮してMatrixに回転を含める
+        page_rotation = page.rotation
+        
+        # 50%のサイズで画像化（回転を考慮）
+        zoom = 0.5
+        # Matrixに回転を含める
+        # 回転が0度でない場合、画像を回転させる
+        if page_rotation != 0:
+            mat = fitz.Matrix(zoom, zoom).prerotate(page_rotation)
+        else:
+            mat = fitz.Matrix(zoom, zoom)
+        
         pix = page.get_pixmap(matrix=mat)
 
         # PIL Imageに変換
